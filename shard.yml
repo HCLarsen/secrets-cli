@@ -2,7 +2,22 @@ name: secrets-cli
 version: 0.1.0
 
 authors:
-  - your-name-here <your-email-here>
+  - Chris Larsen <clarsendev@protonmail.com>
+
+description: Command line encrypted credentials management system.
+
+dependencies:
+  secrets:
+    github: HCLarsen/secrets
+
+development_dependencies:
+  minitest:
+    github: ysbaddaden/minitest.cr
+    version: "0.5.1"
+
+targets:
+  secrets:
+    main: src/secrets.cr
 
 crystal: 0.35.1
 
