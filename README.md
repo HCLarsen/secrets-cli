@@ -1,6 +1,6 @@
 # Secrets cli
 
-Command line interface for the Crystal Secrets [shard](https://github.com/HCLarsen/secrets).
+Command line interface for the [Crystal Secrets](https://github.com/HCLarsen/secrets) shard.
 
 ## Installation
 
