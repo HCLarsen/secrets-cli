@@ -1,0 +1,10 @@
+version: 2.0
+shards:
+  minitest:
+    git: https://github.com/ysbaddaden/minitest.cr.git
+    version: 0.5.1
+
+  secrets:
+    git: https://github.com/HCLarsen/secrets.git
+    version: 0.1.0+git.commit.0785e101e9cfc5a5d0969c62bdcc3888dcf087bc
+
