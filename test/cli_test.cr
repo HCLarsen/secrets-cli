@@ -7,8 +7,6 @@ class CLITest < Minitest::Test
   @default_key_path = "secrets.key"
 
   def setup
-    Dir.mkdir_p("config")
-
     if File.exists?(".gitignore")
       File.copy(".gitignore", ".gitignore-main")
     end
@@ -17,10 +15,6 @@ class CLITest < Minitest::Test
   def teardown
     File.delete(@default_path) if File.exists?(@default_path)
     File.delete(@default_key_path) if File.exists?(@default_key_path)
-
-    File.delete("config/credentials.yml.enc") if File.exists?("config/credentials.yml.enc")
-    File.delete("config/master.key") if File.exists?("config/master.key")
-    Dir.delete("config") if Dir.exists?("config")
 
     if File.exists?(".gitignore-main")
       File.rename(".gitignore-main", ".gitignore")
@@ -42,9 +36,15 @@ class CLITest < Minitest::Test
   end
 
   def test_generates_with_custom_paths
+    Dir.mkdir_p("config")
+
     `crystal run src/secrets-cli.cr -- generate -y "config/credentials.yml.enc" -f config/master.key`
     assert File.exists?("config/credentials.yml.enc")
     assert File.exists?("config/master.key")
+
+    File.delete("config/credentials.yml.enc") if File.exists?("config/credentials.yml.enc")
+    File.delete("config/master.key") if File.exists?("config/master.key")
+    Dir.delete("config") if Dir.exists?("config")
   end
 
   def test_reads_file
