@@ -8,4 +8,7 @@ test: .phony
 run:
 	$(CRYSTAL) run src/secrets-cli.cr
 
+build:
+	shards build --no-debug --release
+
 .phony:
