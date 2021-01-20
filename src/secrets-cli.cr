@@ -77,7 +77,7 @@ class Secrets::CLI
     end
 
     paths = @key
-    secrets = Secrets.new
+    secrets = Secrets.new(@path, @key_path)
     if paths
       parts = paths.split('/')
       any = secrets[parts.shift]
@@ -117,7 +117,7 @@ class Secrets::CLI
   end
 
   def edit_value(keys : String, value : String)
-    secrets = Secrets.new
+    secrets = Secrets.new(@path, @key_path)
     parts = keys.split('/')
     first_key = parts.shift
     final_key = parts.pop
@@ -138,7 +138,7 @@ class Secrets::CLI
 
   def reset
     parse_paths("reset")
-    secrets = Secrets.new
+    secrets = Secrets.new(@path, @key_path)
     secrets.reset
   end
 
