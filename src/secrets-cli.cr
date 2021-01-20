@@ -34,6 +34,11 @@ class Secrets::CLI
         exit
       end
 
+      parser.on("reset", "Resets key and encrypts data with new key") do
+        reset
+        exit
+      end
+
       parser.on("-h", "--help", "Show this help") do
         puts parser
         exit
@@ -139,6 +144,23 @@ class Secrets::CLI
     end
     any[final_key] = value
     secrets.save
+  end
+
+  def reset
+    paths_parser = OptionParser.new do |parser|
+      parser.on("-y PATH", "--yaml-file PATH", "File path") { |_path| @path = _path }
+      parser.on("-f KEY_PATH", "--key-file KEY_PATH", "Key file path") { |_key_path| @key_path = _key_path }
+      parser.on("-h", "--help", "Show this help") do
+        puts parser
+        exit
+      end
+    end
+
+    paths_parser.banner = "Usage: secrets reset [arguments]"
+    paths_parser.parse
+
+    secrets = Secrets.new
+    secrets.reset
   end
 end
 
