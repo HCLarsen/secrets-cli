@@ -12,10 +12,10 @@ git clone https://github.com/HCLarsen/secrets.git
 
 2. Build:
 ```
-make build-cli
+make build
 ```
 
-3. Move `secrets` file to a location in your $PATH.
+3. Move the `secrets` file from the `bin` folder to a location in your $PATH.
 
 ## Usage
 
