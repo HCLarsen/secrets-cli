@@ -56,17 +56,7 @@ class Secrets::CLI
   end
 
   def generate
-    paths_parser = OptionParser.new do |parser|
-      parser.on("-y PATH", "--yaml-file PATH", "File path") { |_path| @path = _path }
-      parser.on("-f KEY_PATH", "--key-file KEY_PATH", "Key file path") { |_key_path| @key_path = _key_path }
-      parser.on("-h", "--help", "Show this help") do
-        puts parser
-        exit
-      end
-    end
-
-    paths_parser.banner = "Usage: secrets generate [arguments]"
-    paths_parser.parse
+    parse_paths("generate")
     Secrets.generate(@path, @key_path)
   end
 
@@ -147,7 +137,14 @@ class Secrets::CLI
   end
 
   def reset
-    paths_parser = OptionParser.new do |parser|
+    parse_paths("reset")
+    secrets = Secrets.new
+    secrets.reset
+  end
+
+  def parse_paths(name : String)
+    paths_parser = OptionParser.parse do |parser|
+      parser.banner = "Usage: secrets #{name} [arguments]"
       parser.on("-y PATH", "--yaml-file PATH", "File path") { |_path| @path = _path }
       parser.on("-f KEY_PATH", "--key-file KEY_PATH", "Key file path") { |_key_path| @key_path = _key_path }
       parser.on("-h", "--help", "Show this help") do
@@ -155,12 +152,6 @@ class Secrets::CLI
         exit
       end
     end
-
-    paths_parser.banner = "Usage: secrets reset [arguments]"
-    paths_parser.parse
-
-    secrets = Secrets.new
-    secrets.reset
   end
 end
 
