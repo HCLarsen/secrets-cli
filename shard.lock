@@ -5,6 +5,6 @@ shards:
     version: 0.5.1
 
   secrets:
-    git: https://github.com/HCLarsen/secrets.git
-    version: 0.1.0+git.commit.9840e2c79b45829e12020633c272eedffea98a81
+    git: https://github.com/hclarsen/secrets.git
+    version: 0.1.0+git.commit.b73878ce8b225d81c847df6e06e2ec4786a54a23
 
