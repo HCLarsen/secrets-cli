@@ -9,6 +9,6 @@ run:
 	$(CRYSTAL) run src/secrets-cli.cr
 
 build:
-	shards build --production
+	shards build --no-debug --release --production
 
 .phony:
