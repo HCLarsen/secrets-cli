@@ -7,7 +7,7 @@ Command line interface for the [Crystal Secrets](https://github.com/HCLarsen/sec
 1. Clone this repo:
 
 ```
-git clone https://github.com/HCLarsen/secrets.git
+git clone https://github.com/HCLarsen/secrets-cli.git
 ```
 
 2. Build:
