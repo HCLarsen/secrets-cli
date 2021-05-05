@@ -13,7 +13,7 @@ dependencies:
 development_dependencies:
   minitest:
     github: ysbaddaden/minitest.cr
-    version: "0.5.1"
+    version: "1.0.1"
 
 targets:
   secrets:
