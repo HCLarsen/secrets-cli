@@ -95,7 +95,7 @@ class CLITest < Minitest::Test
 
   def test_returns_version_number
     response = `crystal run src/secrets-cli.cr -- -v`
-    assert_equal "0.1.0\n", response
+    assert_equal "0.1.1\n", response
   end
 
   def test_resets_key
@@ -144,7 +144,7 @@ class CLITest < Minitest::Test
     Usage: secrets read [arguments]
         -y PATH, --yaml-file PATH        File path
         -f KEY_PATH, --key-file KEY_PATH Key file path
-        -k KEY, --key KEY                Key for value
+        -k KEY, --key KEY                Key for value(use '/' for nested values)
         -h, --help                       Show this help\n
     HELP
 
@@ -158,7 +158,7 @@ class CLITest < Minitest::Test
     Usage: secrets edit [arguments]
         -y PATH, --yaml-file PATH        File path
         -f KEY_PATH, --key-file KEY_PATH Key file path
-        -k KEY, --key KEY                Key for value
+        -k KEY, --key KEY                Key for value(use '/' for nested values)
         -n VALUE, --new-value VALUE      New Value
         -h, --help                       Show this help\n
     HELP

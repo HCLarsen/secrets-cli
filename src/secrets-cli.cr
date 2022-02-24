@@ -65,7 +65,7 @@ class Secrets::CLI
       parser.banner = "Usage: secrets read [arguments]"
       parser.on("-y PATH", "--yaml-file PATH", "File path") { |_path| @path = _path }
       parser.on("-f KEY_PATH", "--key-file KEY_PATH", "Key file path") { |_key_path| @key_path = _key_path }
-      parser.on("-k KEY", "--key KEY ", "Key for value") { |_key| @key = _key }
+      parser.on("-k KEY", "--key KEY ", "Key for value(use '/' for nested values)") { |_key| @key = _key }
       parser.on("-h", "--help", "Show this help") do
         puts parser
         exit
@@ -101,7 +101,7 @@ class Secrets::CLI
       parser.banner = "Usage: secrets edit [arguments]"
       parser.on("-y PATH", "--yaml-file PATH", "File path") { |_path| @path = _path }
       parser.on("-f KEY_PATH", "--key-file KEY_PATH", "Key file path") { |_key_path| @key_path = _key_path }
-      parser.on("-k KEY", "--key KEY ", "Key for value") { |_key| @key = _key }
+      parser.on("-k KEY", "--key KEY ", "Key for value(use '/' for nested values)") { |_key| @key = _key }
       parser.on("-n VALUE", "--new-value VALUE", "New Value") { |_value| @value = _value }
       parser.on("-h", "--help", "Show this help") do
         puts parser
