@@ -65,6 +65,20 @@ class CLITest < Minitest::Test
     assert_equal "WARMACHINEROX\n", response
   end
 
+  def test_outputs_error_reading_invalid_key
+    generate_secrets
+
+    expected = "Invalid key: log/password\nPlease verify key for value.\n"
+    response = `crystal run src/secrets-cli.cr -- read -k log/password`
+
+    assert_equal expected, response
+
+    expected = "Invalid key: login/pass\nPlease verify key for value.\n"
+    response = `crystal run src/secrets-cli.cr -- read -k login/pass`
+
+    assert_equal expected, response
+  end
+
   def test_edits_file
     generate_secrets
 

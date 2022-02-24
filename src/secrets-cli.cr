@@ -2,7 +2,7 @@ require "option_parser"
 require "secrets"
 
 class Secrets::CLI
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
 
   @key : String?
   @value : String?
@@ -80,11 +80,17 @@ class Secrets::CLI
     secrets = Secrets.new(@path, @key_path)
     if paths
       parts = paths.split('/')
-      any = secrets[parts.shift]
-      parts.each do |part|
-        any = any[part]
+      if any = secrets[parts.shift]?
+        parts.each do |part|
+          unless any = any[part]?
+            puts "Invalid key: #{paths}\nPlease verify key for value."
+            exit
+          end
+        end
+        puts any.to_yaml.gsub("--- ", "")
+      else
+        puts "Invalid key: #{paths}\nPlease verify key for value."
       end
-      puts any.to_yaml.gsub("--- ", "")
     else
       puts secrets.raw
     end
