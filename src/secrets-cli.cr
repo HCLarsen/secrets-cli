@@ -125,20 +125,24 @@ class Secrets::CLI
   def edit_value(keys : String, value : String)
     secrets = Secrets.new(@path, @key_path)
     parts = keys.split('/')
-    first_key = parts.shift
-    final_key = parts.pop
-    unless secrets[first_key]?
-      secrets[first_key] = {} of String => Secrets::Any
-    end
-    any = secrets[first_key]
-
-    parts.each do |part|
-      unless any[part]?
-        any[part] = {} of String => Secrets::Any
+    if parts.size > 1
+      first_key = parts.shift
+      final_key = parts.pop
+      unless secrets[first_key]?
+        secrets[first_key] = {} of String => Secrets::Any
       end
-      any = any[part]
+      any = secrets[first_key]
+
+      parts.each do |part|
+        unless any[part]?
+          any[part] = {} of String => Secrets::Any
+        end
+        any = any[part]
+      end
+      any[final_key] = value
+    else
+      secrets[keys] = value
     end
-    any[final_key] = value
     secrets.save
   end
 

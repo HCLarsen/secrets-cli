@@ -82,6 +82,11 @@ class CLITest < Minitest::Test
   def test_edits_file
     generate_secrets
 
+    `crystal run src/secrets-cli.cr -- edit -k name -n "James Rhodes"`
+
+    response = `crystal run src/secrets-cli.cr -- read -k name`
+    assert_equal "James Rhodes\n", response
+
     `crystal run src/secrets-cli.cr -- edit -k login/password -n TONYSTANK`
 
     response = `crystal run src/secrets-cli.cr -- read -k login/password`
