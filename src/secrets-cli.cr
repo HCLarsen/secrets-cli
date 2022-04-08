@@ -2,7 +2,7 @@ require "option_parser"
 require "secrets"
 
 class Secrets::CLI
-  VERSION = "0.1.1"
+  VERSION = "0.1.2"
 
   @key : String?
   @value : String?
