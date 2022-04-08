@@ -1,6 +1,7 @@
 require "minitest/autorun"
 
 require "secrets"
+require "./../src/secrets-cli"
 
 class CLITest < Minitest::Test
   @default_path = "secrets.yml.enc"
@@ -100,7 +101,7 @@ class CLITest < Minitest::Test
 
   def test_returns_version_number
     response = `crystal run src/secrets-cli.cr -- -v`
-    assert_equal "0.1.1\n", response
+    assert_equal "#{Secrets::CLI::VERSION}\n", response
   end
 
   def test_resets_key
