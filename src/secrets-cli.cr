@@ -57,7 +57,11 @@ class Secrets::CLI
 
   def generate
     parse_paths("generate")
-    Secrets.generate(@path, @key_path)
+    begin
+      Secrets.generate!(@path, @key_path)
+    rescue ex
+      puts "Error: #{ex.message}"
+    end
   end
 
   def read

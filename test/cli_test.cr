@@ -36,6 +36,13 @@ class CLITest < Minitest::Test
     assert File.exists?(@default_key_path)
   end
 
+  def test_doesnt_overwrite_files
+    `crystal run src/secrets-cli.cr -- generate`
+
+    message = `crystal run src/secrets-cli.cr -- generate`
+    assert_equal message, "Error: Secrets file already exists\n"
+  end
+
   def test_generates_with_custom_paths
     Dir.mkdir_p("config")
 

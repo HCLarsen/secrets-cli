@@ -41,6 +41,12 @@ $ secrets edit -k API_KEY -n NOTAREALKEY
 
 `secrets reset` generates a new key, and re-encrypts the file with the new key. As with the `generate` command, `-y` and `-f` flags can be used to specify locations for the files.
 
+## Development
+
+### To Do
+
+1. Add Delete option for keys(with confirmation request)
+
 ## Contributing
 
 1. Fork it (<https://github.com/HCLarsen/secrets/fork>)
