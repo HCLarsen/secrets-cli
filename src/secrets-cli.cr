@@ -21,38 +21,32 @@ class Secrets::CLI
       parser.banner = "Usage: secrets [arguments]"
       parser.on("generate", "Create new secrets and key files") do
         generate
-        exit
       end
 
       parser.on("read", "Read the contents of the encrypted file") do
         read
-        exit
       end
 
       parser.on("edit", "Edit a value in the encrypted file") do
         edit
-        exit
       end
 
       parser.on("reset", "Resets key and encrypts data with new key") do
         reset
-        exit
       end
 
       parser.on("-h", "--help", "Show this help") do
         puts parser
-        exit
       end
 
       parser.on("-v", "--version", "Returns version") { puts VERSION }
 
-      if ARGV.empty?
+      if @options.empty?
         puts parser
-        exit
       end
     end
 
-    parser.parse
+    parser.parse(@options)
   end
 
   def generate
@@ -65,7 +59,7 @@ class Secrets::CLI
   end
 
   def read
-    read_parser = OptionParser.parse do |parser|
+    read_parser = OptionParser.parse(@options) do |parser|
       parser.banner = "Usage: secrets read [arguments]"
       parser.on("-y PATH", "--yaml-file PATH", "File path") { |_path| @path = _path }
       parser.on("-f KEY_PATH", "--key-file KEY_PATH", "Key file path") { |_key_path| @key_path = _key_path }
@@ -88,7 +82,7 @@ class Secrets::CLI
         parts.each do |part|
           unless any = any[part]?
             puts "Invalid key: #{paths}\nPlease verify key for value."
-            exit
+            return
           end
         end
         puts any.to_yaml.gsub("--- ", "")
@@ -101,7 +95,7 @@ class Secrets::CLI
   end
 
   def edit
-    edit_parser = OptionParser.parse do |parser|
+    edit_parser = OptionParser.parse(@options) do |parser|
       parser.banner = "Usage: secrets edit [arguments]"
       parser.on("-y PATH", "--yaml-file PATH", "File path") { |_path| @path = _path }
       parser.on("-f KEY_PATH", "--key-file KEY_PATH", "Key file path") { |_key_path| @key_path = _key_path }
@@ -157,7 +151,7 @@ class Secrets::CLI
   end
 
   def parse_paths(name : String)
-    paths_parser = OptionParser.parse do |parser|
+    paths_parser = OptionParser.parse(@options) do |parser|
       parser.banner = "Usage: secrets #{name} [arguments]"
       parser.on("-y PATH", "--yaml-file PATH", "File path") { |_path| @path = _path }
       parser.on("-f KEY_PATH", "--key-file KEY_PATH", "Key file path") { |_key_path| @key_path = _key_path }
@@ -168,5 +162,3 @@ class Secrets::CLI
     end
   end
 end
-
-Secrets::CLI.run

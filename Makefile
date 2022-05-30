@@ -6,7 +6,7 @@ test: .phony
 	$(CRYSTAL) run test/*_test.cr -- --parallel 1
 
 run:
-	$(CRYSTAL) run src/secrets-cli.cr
+	$(CRYSTAL) run src/run.cr
 
 build:
 	shards build --no-debug --release --production

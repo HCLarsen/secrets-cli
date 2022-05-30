@@ -31,22 +31,24 @@ class CLITest < Minitest::Test
   end
 
   def test_generates_default_files
-    `crystal run src/secrets-cli.cr -- generate`
+    Secrets::CLI.run(["generate"])
+
     assert File.exists?(@default_path)
     assert File.exists?(@default_key_path)
   end
 
   def test_doesnt_overwrite_files
-    `crystal run src/secrets-cli.cr -- generate`
+    generate_secrets
 
-    message = `crystal run src/secrets-cli.cr -- generate`
-    assert_equal message, "Error: Secrets file already exists\n"
+    assert_output(stdout: "Error: Secrets file already exists\n") do
+      Secrets::CLI.run(["generate"])
+    end
   end
 
   def test_generates_with_custom_paths
     Dir.mkdir_p("config")
 
-    `crystal run src/secrets-cli.cr -- generate -y "config/credentials.yml.enc" -f config/master.key`
+    Secrets::CLI.run(["generate", "-y", "config/credentials.yml.enc", "-f", "config/master.key"])
     assert File.exists?("config/credentials.yml.enc")
     assert File.exists?("config/master.key")
 
@@ -58,64 +60,64 @@ class CLITest < Minitest::Test
   def test_reads_file
     generate_secrets
 
-    expected = "---\nlogin:\n  username: warmachine68@starkindustries.com\n  password: WARMACHINEROX\n"
-    response = `crystal run src/secrets-cli.cr -- read`
+    assert_output(stdout: "---\nlogin:\n  username: warmachine68@starkindustries.com\n  password: WARMACHINEROX\n") do
+      Secrets::CLI.run(["read"])
+    end
 
-    assert_equal expected, response
+    assert_output(stdout: "---\nusername: warmachine68@starkindustries.com\npassword: WARMACHINEROX\n") do
+      Secrets::CLI.run(["read", "-k", "login"])
+    end
 
-    expected = "---\nusername: warmachine68@starkindustries.com\npassword: WARMACHINEROX\n"
-    response = `crystal run src/secrets-cli.cr -- read -k login`
-
-    assert_equal expected, response
-
-    response = `crystal run src/secrets-cli.cr -- read -k login/password`
-
-    assert_equal "WARMACHINEROX\n", response
+    assert_output(stdout: "WARMACHINEROX\n") do
+      Secrets::CLI.run(["read", "-k", "login/password"])
+    end
   end
 
   def test_outputs_error_reading_invalid_key
     generate_secrets
 
-    expected = "Invalid key: log/password\nPlease verify key for value.\n"
-    response = `crystal run src/secrets-cli.cr -- read -k log/password`
+    assert_output(stdout: "Invalid key: log/password\nPlease verify key for value.\n") do
+      Secrets::CLI.run(["read", "-k", "log/password"])
+    end
 
-    assert_equal expected, response
-
-    expected = "Invalid key: login/pass\nPlease verify key for value.\n"
-    response = `crystal run src/secrets-cli.cr -- read -k login/pass`
-
-    assert_equal expected, response
+    assert_output(stdout: "Invalid key: login/pass\nPlease verify key for value.\n") do
+      Secrets::CLI.run(["read", "-k", "login/pass"])
+    end
   end
 
   def test_edits_file
     generate_secrets
 
-    `crystal run src/secrets-cli.cr -- edit -k name -n "James Rhodes"`
+    Secrets::CLI.run(["edit", "-k", "name", "-n", "James Rhodes"])
 
-    response = `crystal run src/secrets-cli.cr -- read -k name`
-    assert_equal "James Rhodes\n", response
+    assert_output(stdout: "James Rhodes\n") do
+      Secrets::CLI.run(["read", "-k", "name"])
+    end
 
-    `crystal run src/secrets-cli.cr -- edit -k login/password -n TONYSTANK`
+    Secrets::CLI.run(["edit", "-k", "login/password", "-n", "TONYSTANK"])
 
-    response = `crystal run src/secrets-cli.cr -- read -k login/password`
-    assert_equal "TONYSTANK\n", response
+    assert_output(stdout: "TONYSTANK\n") do
+      Secrets::CLI.run(["read", "-k", "login/password"])
+    end
 
-    `crystal run src/secrets-cli.cr -- edit -k a/b/c/d -n "Final Value"`
+    Secrets::CLI.run(["edit", "-k", "a/b/c/d", "-n", "Final Value"])
 
-    response = `crystal run src/secrets-cli.cr -- read -k a/b/c/d`
-    assert_equal "Final Value\n", response
+    assert_output(stdout: "Final Value\n") do
+      Secrets::CLI.run(["read", "-k", "a/b/c/d"])
+    end
   end
 
   def test_returns_version_number
-    response = `crystal run src/secrets-cli.cr -- -v`
-    assert_equal "#{Secrets::CLI::VERSION}\n", response
+    assert_output(stdout: "#{Secrets::CLI::VERSION}\n") do
+      Secrets::CLI.run(["-v"])
+    end
   end
 
   def test_resets_key
     generate_secrets
 
     old_key = File.read(@default_key_path)
-    `crystal run src/secrets-cli.cr -- reset`
+    Secrets::CLI.run(["reset"])
     new_key = File.read(@default_key_path)
 
     refute_equal old_key, new_key
@@ -135,64 +137,12 @@ class CLITest < Minitest::Test
         -v, --version                    Returns version\n
     HELP
 
-    response = `crystal run src/secrets-cli.cr -- -h`
-    assert_equal help, response
+    assert_output(stdout: help) do
+      Secrets::CLI.run(["-h"])
+    end
 
-    response = `crystal run src/secrets-cli.cr`
-    assert_equal help, response
-  end
-
-  def test_subcommand_help
-    help = <<-HELP
-    Usage: secrets generate [arguments]
-        -y PATH, --yaml-file PATH        File path
-        -f KEY_PATH, --key-file KEY_PATH Key file path
-        -h, --help                       Show this help\n
-    HELP
-
-    response = `crystal run src/secrets-cli.cr -- generate -h`
-    assert_equal help, response
-
-    help = <<-HELP
-    Usage: secrets read [arguments]
-        -y PATH, --yaml-file PATH        File path
-        -f KEY_PATH, --key-file KEY_PATH Key file path
-        -k KEY, --key KEY                Key for value(use '/' for nested values)
-        -h, --help                       Show this help\n
-    HELP
-
-    response = `crystal run src/secrets-cli.cr -- read -h`
-    assert_equal help, response
-
-    response = `crystal run src/secrets-cli.cr -- read -k`
-    assert_equal help, response
-
-    help = <<-HELP
-    Usage: secrets edit [arguments]
-        -y PATH, --yaml-file PATH        File path
-        -f KEY_PATH, --key-file KEY_PATH Key file path
-        -k KEY, --key KEY                Key for value(use '/' for nested values)
-        -n VALUE, --new-value VALUE      New Value
-        -h, --help                       Show this help\n
-    HELP
-
-    response = `crystal run src/secrets-cli.cr -- edit -h`
-    assert_equal help, response
-
-    response = `crystal run src/secrets-cli.cr -- edit -k`
-    assert_equal help, response
-
-    response = `crystal run src/secrets-cli.cr -- edit`
-    assert_equal help, response
-
-    help = <<-HELP
-    Usage: secrets reset [arguments]
-        -y PATH, --yaml-file PATH        File path
-        -f KEY_PATH, --key-file KEY_PATH Key file path
-        -h, --help                       Show this help\n
-    HELP
-
-    response = `crystal run src/secrets-cli.cr -- reset -h`
-    assert_equal help, response
+    assert_output(stdout: help) do
+      Secrets::CLI.run([] of String)
+    end
   end
 end

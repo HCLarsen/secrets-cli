@@ -17,7 +17,7 @@ development_dependencies:
 
 targets:
   secrets:
-    main: src/secrets-cli.cr
+    main: src/run.cr
 
 crystal: ">= 0.36.0, < 2.0.0"
 
